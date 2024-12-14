@@ -3,7 +3,13 @@ from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 
 def get_admin_kb():
     kb_list = [
-        [KeyboardButton(text="📋 Список пользователей"), KeyboardButton(text="Тест1")],
+        [
+            KeyboardButton(text="📋 Список пользователей"),
+            KeyboardButton(text="➕ Добавить аккаунт")
+        ],
+        [
+            KeyboardButton(text="📋 Список аккаунтов"),
+        ]
     ]
     keyboard = ReplyKeyboardMarkup(
         keyboard=kb_list,

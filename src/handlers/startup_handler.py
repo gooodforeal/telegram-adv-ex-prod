@@ -7,7 +7,9 @@ from aiogram.utils.deep_linking import decode_payload
 from src.config import settings
 from src.logs.config import configure_logging
 from src.repositories.users_repository import UsersRepository
-from src.models.models import UsersORM
+from src.repositories.accounts_repository import AccountsRepository
+from src.models.models import UsersORM, AccountsORM
+from src.utils.functions import generate_account
 
 
 THREE_WEEKS_SECONDS = 1814400
@@ -43,24 +45,47 @@ async def command_start(message: Message, bot: Bot, command: CommandObject):
     if is_sub.status != "left":
         current_user: UsersORM = await UsersRepository.find_one_or_none_by_tg_id(tg_id=user_tg_id)
         difference = datetime.utcnow() - current_user.last_time_given
-        # Доступен и прошло время
-        if current_user.is_possible and difference.total_seconds() >= THREE_WEEKS_SECONDS:
-            await message.answer(
-                text="Нате доступен и прошло время"
+        # Проверка возможности получения нового аккаунта
+        if current_user.is_possible or difference.total_seconds() >= THREE_WEEKS_SECONDS:
+            # Получение аккаунтов пользователя
+            users_with_accounts: UsersORM = await UsersRepository.find_user_joined_accounts(tg_id=user_tg_id)
+            users_accounts_list: list[AccountsORM] = users_with_accounts.accounts_got
+            # Получение всех аккаунтов
+            all_accounts_list: list[AccountsORM] = await AccountsRepository.find_all()
+            # Получение id нового аккаунта
+            new_user_account_id: int = generate_account(
+                users_accounts=users_accounts_list,
+                all_accounts=all_accounts_list
             )
-            await UsersRepository.update(tg_id=user_tg_id, vals={"is_possible": False})
-        # Недоступен и прошло время
-        elif not current_user.is_possible and difference.total_seconds() >= THREE_WEEKS_SECONDS:
-            await message.answer(
-                text="Нате по времени"
+            # Добавления нового аккаунта и получение его модели
+            new_account_orm: AccountsORM = await UsersRepository.add_user_account(
+                tg_id=user_tg_id,
+                acc_id=new_user_account_id
             )
-            await UsersRepository.update(tg_id=user_tg_id, vals={"last_time_given": datetime.utcnow()})
-        # Доступен и не прошло время
-        elif current_user.is_possible and difference.total_seconds() < THREE_WEEKS_SECONDS:
-            await message.answer(
-                text="Нате по доступности без времени"
-            )
-            await UsersRepository.update(tg_id=user_tg_id, vals={"is_possible": False})
+            # Доступен и прошло время
+            if current_user.is_possible and difference.total_seconds() >= THREE_WEEKS_SECONDS:
+                await message.answer(
+                    text=f"🎁 Поздравляю! Тебе достался аккаунт с {new_account_orm.games}\n"
+                         f"Логин: {new_account_orm.username}\n"
+                         f"Пароль: {new_account_orm.password}"
+                )
+                await UsersRepository.update(tg_id=user_tg_id, vals={"is_possible": False})
+            # Недоступен и прошло время
+            elif not current_user.is_possible and difference.total_seconds() >= THREE_WEEKS_SECONDS:
+                await message.answer(
+                    text=f"🎁 Поздравляю! Тебе достался аккаунт с {new_account_orm.games}\n"
+                         f"Логин: {new_account_orm.username}\n"
+                         f"Пароль: {new_account_orm.password}"
+                )
+                await UsersRepository.update(tg_id=user_tg_id, vals={"last_time_given": datetime.utcnow()})
+            # Доступен и не прошло время
+            elif current_user.is_possible and difference.total_seconds() < THREE_WEEKS_SECONDS:
+                await message.answer(
+                    text=f"🎁 Поздравляю! Тебе достался аккаунт с {new_account_orm.games}\n"
+                         f"Логин: {new_account_orm.username}\n"
+                         f"Пароль: {new_account_orm.password}"
+                )
+                await UsersRepository.update(tg_id=user_tg_id, vals={"is_possible": False})
         else:
             await message.answer(
                 text="Еще не прошло 3 недели с момента прошлой выдачи!"

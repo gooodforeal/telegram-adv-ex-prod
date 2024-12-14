@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing import Annotated
 from sqlalchemy import ForeignKey, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from src.database import Base, int_pk
@@ -17,6 +16,7 @@ class UsersORM(Base):
     accounts_got: Mapped[list["AccountsORM"]] = relationship(
         back_populates="users_got",
         secondary="users_accounts",
+        lazy="selectin"
     )
 
     extend_existing = True
@@ -24,6 +24,7 @@ class UsersORM(Base):
 
 class AccountsORM(Base):
     __tablename__ = "accounts"
+
     id: Mapped[int_pk]
     username: Mapped[str]
     password: Mapped[str]
