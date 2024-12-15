@@ -60,6 +60,7 @@ async def command_admin(message: Message):
     if message.from_user.id == settings.ADMIN_ID:
         accounts_list = await AccountsRepository.find_all()
         formated_list = [
+            f"ID: {acc.id}\n"
             f"👤 Логин: {acc.username}\n"
             f"🔐 Пароль: {acc.password}\n"
             f"🎮 Игры: {acc.games}"

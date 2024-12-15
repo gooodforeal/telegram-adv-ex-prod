@@ -15,7 +15,6 @@ configure_logging()
 async def main():
     bot = Bot(token=settings.BOT_TOKEN)
     dp = Dispatcher()
-    # Routers
     dp.include_routers(startup_router, referral_router, admin_router)
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot)
@@ -23,7 +22,4 @@ async def main():
 
 if __name__ == "__main__":
     logger.info("Starting bot!")
-    try:
-        asyncio.run(main())
-    except KeyboardInterrupt:
-        logger.info("Bot is down!")
+    asyncio.run(main())

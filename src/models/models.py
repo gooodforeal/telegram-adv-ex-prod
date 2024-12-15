@@ -33,6 +33,7 @@ class AccountsORM(Base):
     users_got: Mapped[list["UsersORM"]] = relationship(
         back_populates="accounts_got",
         secondary="users_accounts",
+        lazy="selectin"
     )
 
     extend_existing = True

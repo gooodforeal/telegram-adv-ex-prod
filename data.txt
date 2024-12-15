@@ -1,6 +1,9 @@
+DEPLOYMENT:
 docker compose up -d --build
-
 docker-compose exec bot alembic upgrade head
-
-
+MIGRATIONS:
+alembic init migrations
+alembic revision --autogenerate -m "Commit"
+alembic upgrade head | hash
+IMPORTANT:
 env change localhost to db for docker!!!!
