@@ -31,7 +31,7 @@ async def command_start(message: Message, bot: Bot, command: CommandObject):
         logger.info("Adding new user to database")
         await UsersRepository.add_one(tg_id=user_tg_id)
     logger.info("User already exists!")
-    # Проверка реферала
+    # Получение аргументов реферальной ссылки
     if command.args:
         payload: int = int(decode_payload(command.args))
         referral_user_orm: UsersORM = await UsersRepository.find_one_or_none_by_tg_id(tg_id=payload)
@@ -59,6 +59,12 @@ async def command_start(message: Message, bot: Bot, command: CommandObject):
                 users_accounts=users_accounts_list,
                 all_accounts=all_accounts_list
             )
+            # Проверка на наличие новых аккаунтов
+            if new_user_account_id == 0:
+                await message.answer(
+                    text="⚠️ У нас пока нет нового аккаунта для тебя!"
+                )
+                return
             # Добавления нового аккаунта и получение его модели
             new_account_orm: AccountsORM = await UsersRepository.add_user_account(
                 tg_id=user_tg_id,
@@ -67,9 +73,11 @@ async def command_start(message: Message, bot: Bot, command: CommandObject):
             # Доступен и прошло время
             if current_user_orm.is_possible and difference.total_seconds() >= THREE_WEEKS_SECONDS:
                 await message.answer(
-                    text=f"🎁 Поздравляю! Тебе достался аккаунт с {new_account_orm.games}\n"
+                    text=f"🎁 Поздравляю! Тебе достался аккаунт с {new_account_orm.games}\n\n"
                          f"Логин: {new_account_orm.username}\n"
-                         f"Пароль: {new_account_orm.password}"
+                         f"Пароль: {new_account_orm.password}\n\n"
+                         f"️️⚠️ <b>ПРЕЖДЕ ЧЕМ ИСПОЛЬЗОВАТЬ АККАУНТ ОБЯЗАТЕЛЬНО ПРОЧТИТЕ ИНСТРУКЦИЮ</b> /guide",
+                    parse_mode="html"
                 )
                 await UsersRepository.update(
                     tg_id=user_tg_id,
@@ -78,9 +86,11 @@ async def command_start(message: Message, bot: Bot, command: CommandObject):
             # Недоступен и прошло время
             elif not current_user_orm.is_possible and difference.total_seconds() >= THREE_WEEKS_SECONDS:
                 await message.answer(
-                    text=f"🎁 Поздравляю! Тебе достался аккаунт с {new_account_orm.games}\n"
+                    text=f"🎁 Поздравляю! Тебе достался аккаунт с {new_account_orm.games}\n\n"
                          f"Логин: {new_account_orm.username}\n"
-                         f"Пароль: {new_account_orm.password}"
+                         f"Пароль: {new_account_orm.password}\n\n"
+                         f"️️⚠️ <b>ПРЕЖДЕ ЧЕМ ИСПОЛЬЗОВАТЬ АККАУНТ ОБЯЗАТЕЛЬНО ПРОЧТИТЕ ИНСТРУКЦИЮ</b> /guide",
+                    parse_mode="html"
                 )
                 await UsersRepository.update(
                     tg_id=user_tg_id,
@@ -89,9 +99,11 @@ async def command_start(message: Message, bot: Bot, command: CommandObject):
             # Доступен и не прошло время
             elif current_user_orm.is_possible and difference.total_seconds() < THREE_WEEKS_SECONDS:
                 await message.answer(
-                    text=f"🎁 Поздравляю! Тебе достался аккаунт с {new_account_orm.games}\n"
+                    text=f"🎁 Поздравляю! Тебе достался аккаунт с {new_account_orm.games}\n\n"
                          f"Логин: {new_account_orm.username}\n"
-                         f"Пароль: {new_account_orm.password}"
+                         f"Пароль: {new_account_orm.password}\n\n"
+                         f"️️⚠️ <b>ПРЕЖДЕ ЧЕМ ИСПОЛЬЗОВАТЬ АККАУНТ ОБЯЗАТЕЛЬНО ПРОЧТИТЕ ИНСТРУКЦИЮ</b> /guide",
+                    parse_mode="html"
                 )
                 await UsersRepository.update(
                     tg_id=user_tg_id,
@@ -99,9 +111,9 @@ async def command_start(message: Message, bot: Bot, command: CommandObject):
                 )
         else:
             await message.answer(
-                text="Еще не прошло 3 недели с момента прошлой выдачи!"
+                text="⚠️ Еще не прошло 3 недели с момента прошлой выдачи!"
             )
     else:
         await message.answer(
-            text=f"❗️ Для того, чтобы получить аккаунт необходимо подписаться на наш канал {settings.CHANNEL_LINK}"
+            text=f"⚠️ Для того, чтобы получить аккаунт необходимо подписаться на наш канал {settings.CHANNEL_LINK}"
         )

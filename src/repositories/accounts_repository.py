@@ -1,4 +1,5 @@
 from sqlalchemy import select
+from sqlalchemy import delete as sqlalchemy_delete
 from sqlalchemy.exc import SQLAlchemyError
 from src.database import async_session_maker
 from src.models.models import AccountsORM
@@ -25,3 +26,16 @@ class AccountsRepository:
                 except SQLAlchemyError as e:
                     await session.rollback()
                     raise e
+
+    @classmethod
+    async def delete(cls, filter_by: dict):
+        async with async_session_maker() as session:
+            async with session.begin():
+                query = sqlalchemy_delete(cls.model).filter_by(**filter_by)
+                result = await session.execute(query)
+                try:
+                    await session.commit()
+                except SQLAlchemyError as e:
+                    await session.rollback()
+                    raise e
+                return result.rowcount
