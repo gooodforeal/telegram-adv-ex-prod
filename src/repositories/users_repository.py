@@ -80,4 +80,3 @@ class UsersRepository:
             except SQLAlchemyError as e:
                 await session.rollback()
                 raise e
-

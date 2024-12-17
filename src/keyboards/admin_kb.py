@@ -12,7 +12,6 @@ def get_admin_kb():
         [
             KeyboardButton(text="✅ Добавить аккаунт"),
             KeyboardButton(text="❌ Удалить аккаунт")
-
         ]
     ]
     keyboard = ReplyKeyboardMarkup(
