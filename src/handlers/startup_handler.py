@@ -1,9 +1,11 @@
 import logging
 from datetime import datetime, timedelta
+
 from aiogram import Router, Bot
 from aiogram.filters import Command, CommandObject
 from aiogram.types import Message
 from aiogram.utils.deep_linking import decode_payload
+
 from src.config import settings
 from src.logs.config import configure_logging
 from src.repositories.users_repository import UsersRepository
@@ -18,12 +20,20 @@ THREE_WEEKS_SECONDS = 1814400
 logger = logging.getLogger(__name__)
 configure_logging()
 
-
 router = Router()
 
 
 @router.message(Command("start"))
-async def command_start(message: Message, bot: Bot, command: CommandObject):
+async def command_start_handler(message: Message, bot: Bot, command: CommandObject):
+    """
+    Функция обработки команды /start, для выдачи аккаунтов пользователям бота.
+    Здесь реализована основная логика бота
+
+    :param Message message: Сообщение от пользователя
+    :param Bot bot: Экземпляр бота
+    :param CommandObject command: Экземпляр команды
+    :return: None
+    """
     # Добавление нового пользователя в БД
     logger.info("New request from user %r", message.from_user.id)
     user_tg_id: int = message.from_user.id
@@ -48,7 +58,7 @@ async def command_start(message: Message, bot: Bot, command: CommandObject):
         # Проверка возможности получения нового аккаунта
         if current_user_orm.is_possible or difference.total_seconds() >= THREE_WEEKS_SECONDS:
             # Получение аккаунтов пользователя
-            users_with_accounts: UsersORM = await UsersRepository.find_user_joined_accounts(tg_id=user_tg_id)
+            users_with_accounts: UsersORM = await UsersRepository.find_one_or_none_by_tg_id_joined(tg_id=user_tg_id)
             users_accounts_list: list[AccountsORM] = users_with_accounts.accounts_got
             # Получение всех аккаунтов
             all_accounts_list: list[AccountsORM] = await AccountsRepository.find_all()
@@ -58,7 +68,7 @@ async def command_start(message: Message, bot: Bot, command: CommandObject):
                 all_accounts=all_accounts_list
             )
             # Проверка на наличие новых аккаунтов
-            if new_user_account_id == 0:
+            if new_user_account_id is None:
                 await message.answer(text=no_new_acc_yet_message)
                 return
             # Добавления нового аккаунта и получение его модели

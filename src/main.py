@@ -1,8 +1,10 @@
 import asyncio
 import logging
+from aiogram import Bot, Dispatcher
+
 from logs.config import configure_logging
 from config import settings
-from aiogram import Bot, Dispatcher
+
 from handlers.referral_handler import router as referral_router
 from handlers.startup_handler import router as startup_router
 from handlers.admin_handler import router as admin_router

@@ -10,5 +10,12 @@ acc_list_message = "ID: {:s}\n👤 Логин: {:s}\n🔐 Пароль: {:s}\n�
 del_acc_message = "Отправьте ID аккаунта, который необходимо удалить в формате:\n\n<code>del:\n12</code>"
 add_acc_message = "Отправьте аккаунты которые необходимо добавить в формате:\n\n" \
                   "<code>add:\nlogin1:password1:games1\nlogin2:password:games2</code>"
+del_acc_not_found = "⛔️ Аккаунт с указанным ID не найден!"
 
+DELETE_ACCOUNT_INSTRUCTION_PATTERN = "❌ Удалить аккаунт"
+DELETE_ACCOUNT_PATTERN = "del:"
+ADD_ACCOUNT_INSTRUCTION_PATTERN = "✅ Добавить аккаунт"
+ADD_ACCOUNT_PATTERN = "add:"
+USERS_LIST_PATTERN = "📋 Список пользователей"
+ACCOUNTS_LIST_PATTERN = "📋 Список аккаунтов"
 
