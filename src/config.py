@@ -8,6 +8,7 @@ class Settings(BaseSettings):
     POSTGRES_DB: str
     POSTGRES_USER: str
     POSTGRES_PASSWORD: str
+
     BOT_TOKEN: str
     ADMIN_ID: int
     CHANNEL_LINK: str
