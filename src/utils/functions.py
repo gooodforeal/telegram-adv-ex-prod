@@ -6,7 +6,7 @@ from src.models.models import AccountsORM, UsersORM
 
 def generate_account(users_accounts: list[AccountsORM], all_accounts: list[AccountsORM]) -> Optional[int]:
     """
-    Функция генерации нового аккаунта для пользователя с использованием рандома
+    Функция генерации id нового аккаунта для пользователя с использованием рандома
 
     :param list[AccountsORM] users_accounts: Список аккаунтов пользователя
     :param list[AccountsORM] all_accounts: Список всех доступных аккаунтов
