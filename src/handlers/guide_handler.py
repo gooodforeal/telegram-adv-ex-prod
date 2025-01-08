@@ -5,7 +5,7 @@ from aiogram.filters import Command
 from aiogram.types import Message
 
 from src.logs.config import configure_logging
-from src.messages.guide_messages import guide_message
+from src.messages.guide_messages import GUIDE_MESSAGE
 
 
 logger = logging.getLogger(__name__)
@@ -23,4 +23,4 @@ async def command_guide_handler(message: Message):
     :return: None
     """
     logger.info("New guide request from user: %r", message.from_user.id)
-    await message.answer(text=guide_message, parse_mode="html")
+    await message.answer(text=GUIDE_MESSAGE, parse_mode="html")

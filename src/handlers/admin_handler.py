@@ -37,12 +37,12 @@ async def delete_account_handler(message: Message):
         rows_deleted: int = await AccountsRepository.delete(filter_by=account_dto)
         # Проверка количества удаленных записей
         if rows_deleted == 0:
-            await message.answer(text=del_acc_not_found)
+            await message.answer(text=DEL_ACC_NOT_FOUND_MESSAGE)
         else:
-            await message.answer(text=success_del_acc_message)
+            await message.answer(text=SUCCESS_DEL_ACC_MESSAGE)
     except Exception as ex:
         logger.error("Invalid data format %s", ex)
-        await message.answer(text=invalid_data_message)
+        await message.answer(text=INVALID_DATA_FORMAT_MESSAGE)
 
 
 @router.message(
@@ -56,7 +56,7 @@ async def delete_account_instruction_handler(message: Message):
     :param Message message: Сообщение от пользователя
     :return: None
     """
-    await message.answer(text=del_acc_message, parse_mode="html")
+    await message.answer(text=DEL_ACC_MESSAGE, parse_mode="html")
 
 
 @router.message(
@@ -73,10 +73,10 @@ async def add_account_handler(message: Message):
     try:
         account_dto: list[dict] = convert_add_message(message=message.text)
         await AccountsRepository.add_many(data=account_dto)
-        await message.answer(text=success_add_acc_message)
+        await message.answer(text=SUCCESS_ADD_ACC_MESSAGE)
     except Exception as ex:
         logger.error("Invalid data format %s", ex)
-        await message.answer(text=invalid_data_message)
+        await message.answer(text=INVALID_DATA_FORMAT_MESSAGE)
 
 
 @router.message(
@@ -90,7 +90,7 @@ async def add_account_instruction_handler(message: Message):
     :param Message message: Сообщение от пользователя
     :return: None
     """
-    await message.answer(text=add_acc_message, parse_mode="html")
+    await message.answer(text=ADD_ACC_MESSAGE, parse_mode="html")
 
 
 @router.message(
@@ -106,14 +106,14 @@ async def accounts_list_handler(message: Message):
     """
     accounts_list: list[AccountsORM] = await AccountsRepository.find_all()
     formated_list: list[str] = format_accounts_list(
-        pattern=acc_list_message,
+        pattern=ACC_LIST_MESSAGE,
         accounts_list=accounts_list
     )
     if len(formated_list):
         for acc in formated_list:
             await message.answer(text=acc)
     else:
-        await message.answer(text=empty_acc_list_message)
+        await message.answer(text=EMPTY_ACC_LIST_MESSAGE)
 
 
 @router.message(
@@ -129,14 +129,14 @@ async def users_list_handler(message: Message):
     """
     users_list: list[UsersORM] = await UsersRepository.find_all()
     formated_list: list[str] = format_users_list(
-        pattern=user_list_message,
+        pattern=USER_LIST_MESSAGE,
         users_list=users_list
     )
     if len(formated_list):
         for user in formated_list:
             await message.answer(text=user)
     else:
-        await message.answer(text=empty_user_list_message)
+        await message.answer(text=EMPTY_USER_LIST_MESSAGE)
 
 
 @router.message(
@@ -151,4 +151,4 @@ async def command_admin_handler(message: Message):
     :return: None
     """
     logger.info("New admin panel request from user: %r", message.from_user.id)
-    await message.answer(text=admin_panel_message, reply_markup=get_admin_kb())
+    await message.answer(text=ADMIN_PANEL_MESSAGE, reply_markup=get_admin_kb())

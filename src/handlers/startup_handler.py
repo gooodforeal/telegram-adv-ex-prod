@@ -69,7 +69,7 @@ async def command_start_handler(message: Message, bot: Bot, command: CommandObje
             )
             # Проверка на наличие новых аккаунтов
             if new_user_account_id is None:
-                await message.answer(text=no_new_acc_yet_message)
+                await message.answer(text=NO_NEW_ACC_YET_MESSAGE)
                 return
             # Добавления нового аккаунта и получение его модели
             new_account_orm: AccountsORM = await UsersRepository.add_user_account(
@@ -80,7 +80,7 @@ async def command_start_handler(message: Message, bot: Bot, command: CommandObje
             if current_user_orm.is_possible and difference.total_seconds() >= THREE_WEEKS_SECONDS:
                 await message.answer(
                     parse_mode="html",
-                    text=give_acc_message.format(
+                    text=GIVE_ACC_MESSAGE.format(
                         new_account_orm.games,
                         new_account_orm.username,
                         new_account_orm.password
@@ -91,7 +91,7 @@ async def command_start_handler(message: Message, bot: Bot, command: CommandObje
             elif not current_user_orm.is_possible and difference.total_seconds() >= THREE_WEEKS_SECONDS:
                 await message.answer(
                     parse_mode="html",
-                    text=give_acc_message.format(
+                    text=GIVE_ACC_MESSAGE.format(
                         new_account_orm.games,
                         new_account_orm.username,
                         new_account_orm.password
@@ -102,7 +102,7 @@ async def command_start_handler(message: Message, bot: Bot, command: CommandObje
             elif current_user_orm.is_possible and difference.total_seconds() < THREE_WEEKS_SECONDS:
                 await message.answer(
                     parse_mode="html",
-                    text=give_acc_message.format(
+                    text=GIVE_ACC_MESSAGE.format(
                         new_account_orm.games,
                         new_account_orm.username,
                         new_account_orm.password
@@ -110,6 +110,6 @@ async def command_start_handler(message: Message, bot: Bot, command: CommandObje
                 )
                 await UsersRepository.update(tg_id=user_tg_id, vals={"is_possible": False})
         else:
-            await message.answer(text=not_time_yet_message)
+            await message.answer(text=NOT_TIME_YET_MESSAGE)
     else:
-        await message.answer(text=not_sub_message.format(settings.CHANNEL_LINK))
+        await message.answer(text=NOT_SUB_MESSAGE.format(settings.CHANNEL_LINK))
