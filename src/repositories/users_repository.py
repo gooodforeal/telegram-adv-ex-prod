@@ -54,6 +54,21 @@ class UsersRepository:
             return result.scalars().all()
 
     @classmethod
+    async def find_all_with_accs(cls) -> list[UsersORM]:
+        """
+        Функция для получения всех записей из таблицы users c числом аккаунтов
+
+        :return: list[UsersORM]: Список моделей пользователя
+        """
+        async with async_session_maker() as session:
+            query = (
+                select(cls.model).
+                options(selectinload(cls.model.accounts_got))
+            )
+            result = await session.execute(query)
+            return result.scalars().all()
+
+    @classmethod
     async def add_one(cls, tg_id: int) -> None:
         """
         Функция для добавления новой записи в таблицу users
