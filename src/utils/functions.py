@@ -1,7 +1,13 @@
+import logging
 import random
 from typing import Optional
 
+from src.logs.config import configure_logging
 from src.models.models import AccountsORM, UsersORM
+
+
+logger = logging.getLogger(__name__)
+configure_logging()
 
 
 def generate_account(users_accounts: list[AccountsORM], all_accounts: list[AccountsORM]) -> Optional[int]:
@@ -12,12 +18,13 @@ def generate_account(users_accounts: list[AccountsORM], all_accounts: list[Accou
     :param list[AccountsORM] all_accounts: Список всех доступных аккаунтов
     :return: int | None: Возвращает id сгенерированного аккаунта
     """
+    user_accounts_ids: list[int] = [user.id for user in users_accounts]
     while True:
         # Если список аккаунтов пуст или у пользователя уже есть все доступные аккаунты
         if len(users_accounts) == len(all_accounts) or len(all_accounts) == 0:
             return None
         rnd_acc: AccountsORM = random.choice(all_accounts)
-        if rnd_acc not in users_accounts:
+        if rnd_acc.id not in user_accounts_ids:
             return rnd_acc.id
 
 
