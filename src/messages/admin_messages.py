@@ -4,7 +4,8 @@ NOT_ADMIN_MESSAGE = f"⛔️ Вы не являетесь администрат
 ADMIN_PANEL_MESSAGE = "Панель администратора:"
 
 EMPTY_USER_LIST_MESSAGE = "📋 Список пользователей пуст!"
-USER_LIST_MESSAGE = "📌 ID: {:s}\n📌 TG_ID: {:s}\n⏰ Дата регистрации: {:s}\n📲 Последняя выдача: {:s}\n👤 Реферал: {:s}"
+USER_LIST_MESSAGE = "📌 ID: {:s}\n📌 TG_ID: {:s}\n📌 USERNAME: {:s}\n" \
+                    "⏰ Дата регистрации: {:s}\n📲 Последняя выдача: {:s}\n👤 Реферал: {:s}\n📌 Аккаунты: {:s}"
 
 ACC_LIST_MESSAGE = "ID: {:s}\n👤 Логин: {:s}\n🔐 Пароль: {:s}\n🎮 Игры: {:s}"
 EMPTY_ACC_LIST_MESSAGE = "📋 Список аккаунтов пуст!"
@@ -23,4 +24,3 @@ ADD_ACCOUNT_INSTRUCTION_PATTERN = "✅ Добавить аккаунт"
 ADD_ACCOUNT_PATTERN = "add:"
 USERS_LIST_PATTERN = "📋 Список пользователей"
 ACCOUNTS_LIST_PATTERN = "📋 Список аккаунтов"
-

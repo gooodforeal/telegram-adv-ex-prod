@@ -22,11 +22,12 @@ class RegisterUser(BaseMiddleware):
     ) -> Any:
         logger.info("User registration start! User: %r", event.from_user.id)
         user_tg_id: int = event.from_user.id
+        username: str = event.from_user.username
         command: CommandObject = data["command"]
         user_exists_check: UsersORM = await UsersRepository.find_one_or_none_by_tg_id(tg_id=user_tg_id)
         if not user_exists_check:
             logger.info("Adding new user to database")
-            await UsersRepository.add_one(tg_id=user_tg_id)
+            await UsersRepository.add_one(tg_id=user_tg_id, username=username)
             # Получение аргументов реферальной ссылки
             if command.args:
                 payload: int = int(decode_payload(command.args))

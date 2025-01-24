@@ -68,9 +68,11 @@ def format_users_list(pattern: str, users_list: list[UsersORM]) -> list[str]:
         pattern.format(
             str(user.id),
             str(user.tg_id),
+            f"@{str(user.username)}",
             str(user.created_at),
             str(user.last_time_given),
-            str(user.is_reffed)
+            str(user.is_reffed),
+            str(len(user.accounts_got))
         )
         for user in users_list
     ]

@@ -20,9 +20,11 @@ class CheckSubscription(BaseMiddleware):
         event: Message,
         data: Dict[str, Any]
     ) -> Any:
-        logger.info("Check subscription start! User: %r", event.from_user.id)
-        chat_member = await event.bot.get_chat_member(settings.CHANNEL_ID, event.from_user.id)
+        user_id: int = event.from_user.id
+        logger.info("Check subscription start! User: %r", user_id)
+        chat_member = await event.bot.get_chat_member(chat_id=settings.CHANNEL_ID, user_id=user_id)
         if chat_member.status == "left":
             await event.answer(text=not_sub_message, reply_markup=get_sub_kb())
         else:
+            logger.info("Check subscription end!")
             return await handler(event, data)

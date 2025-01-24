@@ -69,16 +69,17 @@ class UsersRepository:
             return result.scalars().all()
 
     @classmethod
-    async def add_one(cls, tg_id: int) -> None:
+    async def add_one(cls, tg_id: int, username: str) -> None:
         """
         Функция для добавления новой записи в таблицу users
 
         :param int tg_id: Уникальный номер пользователя Telegram
+        :param str username: Имя пользователя Telegram
         :return: None
         """
         async with async_session_maker() as session:
             try:
-                new_user = UsersORM(tg_id=tg_id)
+                new_user = UsersORM(tg_id=tg_id, username=username)
                 session.add(new_user)
                 await session.commit()
             except SQLAlchemyError as e:
