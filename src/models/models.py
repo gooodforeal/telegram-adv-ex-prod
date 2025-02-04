@@ -11,7 +11,7 @@ class UsersORM(Base):
 
     id: Mapped[int_pk]
     tg_id: Mapped[str]
-    username: Mapped[str]
+    username: Mapped[str] = mapped_column(nullable=True)
     last_time_given: Mapped[datetime] = mapped_column(server_default=func.now())
     is_reffed: Mapped[bool] = mapped_column(default=False)
     is_possible: Mapped[bool] = mapped_column(default=True)
