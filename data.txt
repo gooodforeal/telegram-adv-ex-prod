@@ -7,3 +7,6 @@ alembic revision --autogenerate -m "Commit"
 alembic upgrade head | hash
 IMPORTANT:
 env change localhost to db for docker!!!!
+docker rm $(docker ps -qa)
+docker volume ls
+docker volume rm telegram-ad-bot_pgdata
