@@ -20,7 +20,7 @@ class UsersRepository:
         :return: UsersORM: Модель пользователя
         """
         async with async_session_maker() as session:
-            query = select(cls.model).filter_by(tg_id=tg_id)
+            query = select(cls.model).filter_by(tg_id=str(tg_id))
             result = await session.execute(query)
             return result.scalar_one_or_none()
 
@@ -36,7 +36,7 @@ class UsersRepository:
             query = (
                 select(cls.model).
                 options(selectinload(cls.model.accounts_got))
-                .filter_by(tg_id=tg_id)
+                .filter_by(tg_id=str(tg_id))
             )
             result = await session.execute(query)
             return result.scalar_one_or_none()
@@ -79,7 +79,7 @@ class UsersRepository:
         """
         async with async_session_maker() as session:
             try:
-                new_user = UsersORM(tg_id=tg_id, username=username)
+                new_user = UsersORM(tg_id=str(tg_id), username=username)
                 session.add(new_user)
                 await session.commit()
             except SQLAlchemyError as e:
@@ -99,7 +99,7 @@ class UsersRepository:
             try:
                 stmt = (
                     update(cls.model)
-                    .where(cls.model.tg_id == tg_id)
+                    .where(cls.model.tg_id == str(tg_id))
                     .values(**vals)
                 )
                 res = await session.execute(stmt)
@@ -121,7 +121,7 @@ class UsersRepository:
             try:
                 get_user = (
                     select(cls.model)
-                    .filter_by(tg_id=tg_id)
+                    .filter_by(tg_id=str(tg_id))
                 )
                 user_orm: UsersORM = (await session.execute(get_user)).scalar_one()
                 get_account = (
